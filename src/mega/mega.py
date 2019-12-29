@@ -144,6 +144,7 @@ class Mega:
         wait=wait_exponential(multiplier=2, min=2, max=60)
     )
     def _api_request(self, data):
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
         params = {'id': self.sequence_num}
         self.sequence_num += 1
 
@@ -160,6 +161,7 @@ class Mega:
             params=params,
             data=json.dumps(data),
             timeout=self.timeout,
+            headers=headers
         )
         json_resp = json.loads(req.text)
         if isinstance(json_resp, int):
@@ -765,6 +767,7 @@ class Mega:
             return output_path
 
     def upload(self, filename, dest=None, dest_filename=None):
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
         # determine storage node
         if dest is None:
             # if none set, upload to cloud drive node
@@ -817,7 +820,8 @@ class Mega:
                     output_file = requests.post(
                         ul_url + "/" + str(chunk_start),
                         data=chunk,
-                        timeout=self.timeout
+                        timeout=self.timeout,
+                        headers=headers
                     )
                     completion_file_handle = output_file.text
                     logger.info(
